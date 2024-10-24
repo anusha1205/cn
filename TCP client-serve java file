@@ -1,1 +1,66 @@
+//MY CLIENT JAVA FILE
+package TCP;
 
+import java.io.*;
+import java.net.*;
+
+public class MyTcpClient {
+    public static void main(String[] args) {
+        Socket s = null;
+        DataOutputStream dout = null;
+        try {
+            s = new Socket("localhost", 6666);
+            dout = new DataOutputStream(s.getOutputStream());
+            dout.writeUTF("Hello TCP Server\nSender's Message has been recieved!"); 
+            dout.flush();
+            System.out.println("Message sent to TCP Server.");
+        } catch (IOException e) {
+            System.out.println("Error: " + e.getMessage());
+        } finally {
+            try {
+                if (dout != null) dout.close(); 
+                if (s != null) s.close(); 
+            } catch (IOException e) {
+                System.out.println("Error closing resources: " + e.getMessage());
+            }
+        }
+    }
+}
+
+
+//MY SERVER JAVA FILE
+package TCP;
+
+import java.io.*;
+import java.net.*;
+
+public class MyTcpServer {
+    public static void main(String[] args) {
+        ServerSocket ss = null;
+        Socket s = null;
+        DataInputStream dis = null;
+        
+        try {
+            ss = new ServerSocket(6666); // Create TCP Server Socket
+            System.out.println("TCP Server is running and waiting for a client...");
+
+            // Accept a client connection
+            s = ss.accept();
+            System.out.println("TCP Client connected.");
+
+            dis = new DataInputStream(s.getInputStream());
+            String str = dis.readUTF(); // Read message from client
+            System.out.println("Message from TCP client: " + str);
+        } catch (IOException e) {
+            System.out.println("Error: " + e.getMessage());
+        } finally {
+            try {
+                if (dis != null) dis.close(); // Close input stream
+                if (s != null) s.close(); // Close socket
+                if (ss != null) ss.close(); // Close server socket
+            } catch (IOException e) {
+                System.out.println("Error closing resources: " + e.getMessage());
+            }
+        }
+    }
+}
