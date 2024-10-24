@@ -1,0 +1,43 @@
+# UDP CLIENT
+import java.net.*;
+
+public class MyUdpClient {
+    public static void main(String[] args) {
+        try {
+            DatagramSocket ds = new DatagramSocket(); // Create UDP socket
+            String message = "Hello UDP Server";
+            byte[] buf = message.getBytes();
+
+            InetAddress ip = InetAddress.getByName("localhost"); // Server IP
+            DatagramPacket dp = new DatagramPacket(buf, buf.length, ip, 9876); // Packet to send
+            ds.send(dp); // Send packet to server
+
+            ds.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+}
+
+# UDP SERVER
+import java.net.*;
+
+public class MyUdpServer {
+    public static void main(String[] args) {
+        try {
+            DatagramSocket ds = new DatagramSocket(9876); // Create UDP socket
+            System.out.println("UDP Server is running and waiting for a client...");
+
+            byte[] buf = new byte[256]; // Buffer to receive data
+            DatagramPacket dp = new DatagramPacket(buf, buf.length);
+            ds.receive(dp); // Receive packet from client
+
+            String message = new String(dp.getData(), 0, dp.getLength());
+            System.out.println("Message from UDP client: " + message);
+
+            ds.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+}
